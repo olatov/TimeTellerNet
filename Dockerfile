@@ -4,7 +4,7 @@ WORKDIR /app
 
 # Copy csproj and restore as distinct layers
 COPY *.csproj .
-RUN nuget restore
+RUN nuget restore TimeTellerNet.csproj
 
 # Copy everything else and build the application
 COPY . .
