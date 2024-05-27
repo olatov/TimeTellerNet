@@ -1,0 +1,19 @@
+# Use the official Mono image from Docker Hub
+FROM mono:6.12 AS build
+WORKDIR /app
+
+# Copy csproj and restore as distinct layers
+COPY *.csproj .
+RUN nuget restore TimeTellerNet.csproj
+
+# Copy everything else and build the application
+COPY . .
+RUN msbuild /p:Configuration=Release
+
+# Build runtime image
+FROM mono:6.12-slim AS runtime
+WORKDIR /app
+COPY --from=build /app/bin/Release .
+
+# Set entrypoint to the executable
+ENTRYPOINT ["mono", "./TimeTellerNet.exe"]
